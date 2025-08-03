@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@radix-ui/themes"
+import Link from "next/link"
 
 export default function Page(){
 
@@ -9,7 +10,7 @@ export default function Page(){
 
     return(
         <>
-        <Button>New issue</Button>
+        <Button><Link href="/issues/new">New issue</Link></Button>
         <div>issues page</div>
         </>
     )
