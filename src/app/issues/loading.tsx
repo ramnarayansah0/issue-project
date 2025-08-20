@@ -27,7 +27,7 @@ export default function Loading(){
                                 <div className="block md:hidden"><Skeleton/></div>
                             </Table.Cell>
                             
-                            <Table.Cell className="hidden md:table-cell"><Skeleton/> </Table.Cell>
+                            <Table.Cell className="hidden md:table-cell"><Skeleton/></Table.Cell>
                             <Table.Cell className="hidden md:table-cell"><Skeleton/></Table.Cell>
 
                         </Table.Row>

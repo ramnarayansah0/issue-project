@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { prisma } from "../../../../prisma/client"
 import IssueStatusBadge from "@/app/component/IssueStatusBadge";
-import { Card, Flex } from "@radix-ui/themes";
+import { Button, Card, Flex } from "@radix-ui/themes";
 import ReactMarkdown from 'react-markdown'
+import {Pencil2Icon} from '@radix-ui/react-icons'
+import Link from "next/link";
 
 interface Props{
     params:{id:string}
@@ -18,7 +20,16 @@ export default async function page( {params}: Props){
     return(
         <>
         <div>
+            <div className="flex justify-between">
+
             <p className="text-3xl font-bold">{issue.title}</p>
+            <Button><Pencil2Icon/>
+           
+             <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
+             </Button>
+            </div>
+            
+            
             <Flex>
 
             <IssueStatusBadge status={issue.status}/>
