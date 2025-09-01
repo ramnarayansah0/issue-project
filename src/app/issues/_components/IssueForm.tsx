@@ -36,9 +36,16 @@ export default function IssueForm({ issue }: Props) {
   
   const onSubmit=handleSubmit(async(data)=>{
     try {
-      setSubmit(true)
-      await axios.post('/api/issues', data);
-      router.push('/issues');
+      setSubmit(true);
+      if(issue){
+        await axios.patch(`/api/issues/`+issue.id, data);
+      }
+      
+      else{
+        await axios.post('/api/issues', data);
+        router.push('/issues');
+      }
+      
     } catch (error) {
       setError("An unexpected error occurred.");
       setSubmit(false)
@@ -48,7 +55,8 @@ export default function IssueForm({ issue }: Props) {
   return (
     <div className="max-w-xl">
       {error && <Callout.Root color="red" className="mb-5">{error}</Callout.Root>}
-       
+
+
     <form className="max-w-xl space-y-3" onSubmit={onSubmit}>
       <TextField.Root>
         <TextField.Slot>
@@ -65,7 +73,7 @@ export default function IssueForm({ issue }: Props) {
        />
        {errors.description && <Text color='red' as='p'>{errors.description.message}</Text>}
 
-      <Button  disabled={submit}>Submit New Issue{submit && <Spinner></Spinner>} </Button>
+      <Button  disabled={submit}>{issue ?'Update Issue' : 'Submit New Issue'} {submit && <Spinner></Spinner>} </Button>
     </form>
     </div>
   

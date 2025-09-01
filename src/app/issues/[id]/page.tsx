@@ -3,7 +3,7 @@ import { prisma } from "../../../../prisma/client"
 import IssueStatusBadge from "@/app/component/IssueStatusBadge";
 import { Button, Card, Flex } from "@radix-ui/themes";
 import ReactMarkdown from 'react-markdown'
-import {Pencil2Icon} from '@radix-ui/react-icons'
+import {Pencil2Icon, TrashIcon} from '@radix-ui/react-icons'
 import Link from "next/link";
 
 interface Props{
@@ -23,10 +23,12 @@ export default async function page( {params}: Props){
             <div className="flex justify-between">
 
             <p className="text-3xl font-bold">{issue.title}</p>
+            <Flex gap="4">
             <Button><Pencil2Icon/>
-           
              <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
              </Button>
+            <Button color="red" ><TrashIcon/> Delete Issue</Button>
+            </Flex>
             </div>
             
             
