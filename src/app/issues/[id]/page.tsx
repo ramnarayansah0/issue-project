@@ -5,6 +5,7 @@ import { Button, Card, Flex } from "@radix-ui/themes";
 import ReactMarkdown from 'react-markdown'
 import {Pencil2Icon, TrashIcon} from '@radix-ui/react-icons'
 import Link from "next/link";
+import DeleteIssueButton from "./DeleteIssueButton";
 
 interface Props{
     params:{id:string}
@@ -27,7 +28,7 @@ export default async function page( {params}: Props){
             <Button><Pencil2Icon/>
              <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
              </Button>
-            <Button color="red" ><TrashIcon/> Delete Issue</Button>
+            <DeleteIssueButton issueId={issue.id}/>
             </Flex>
             </div>
             
