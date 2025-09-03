@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./NavBar";
 import { Theme } from "@radix-ui/themes";
+import AuthProvider from "./auth/Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,14 +31,14 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      ><AuthProvider>
         <Theme>
         <NavBar></NavBar>
         <main className="p-5">
         {children}
         </main>
         </Theme>
-        
+        </AuthProvider>
       </body>
     </html>
   );

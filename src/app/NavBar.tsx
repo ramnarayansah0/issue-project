@@ -2,8 +2,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillBug } from "react-icons/ai";
-import { FaBeer } from "react-icons/fa";
 import classnames from "classnames";
+import { Box } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
 
 
 
@@ -14,6 +15,8 @@ export default function NavBar(){
         { label: 'Issue', href: '/issues'},
     ]
 
+    const{status, data}= useSession();
+
 
     return(
         <>
@@ -22,16 +25,25 @@ export default function NavBar(){
                 <Link href="/"> <AiFillBug/></Link>
                 <ul className="flex gap-x-6">
                     {links.map(link =>
+                    <li key={link.href}>
                     <Link
-                    key={link.href}
+                    
                     className={classnames({
                         'text-zinc-900': link.href === currentPath,
                         'text-zinc-500' :link.href !== currentPath,
                         'hover:text-zinc-800 transition-colors': true
                     })}
-                        href={link.href}>{link.label}</Link>)}
+                        href={link.href}>{link.label}</Link> </li>)}
                     
                 </ul>
+                <Box>
+                    {status === "authenticated" &&(
+                        <Link href="/api/auth/signout">Log out</Link>
+                    )}
+                    {status === "unauthenticated" &&(
+                        <Link href="/api/auth/signin">Log in</Link>
+                    )}
+                </Box>
             </div>
         </main>
         </>
