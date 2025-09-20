@@ -6,12 +6,18 @@ import ReactMarkdown from 'react-markdown'
 import {Pencil2Icon, TrashIcon} from '@radix-ui/react-icons'
 import Link from "next/link";
 import DeleteIssueButton from "./DeleteIssueButton";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
+import * as React from "react";
+import SelectDemo from "./SelectDemo";
+ 
 
 interface Props{
     params:{id:string}
     
 }
 export default async function page( {params}: Props){
+  const session = await getServerSession(authOptions)
     
     const issue = await prisma.issue.findUnique({
         where: { id: parseInt(params.id)}
@@ -20,17 +26,21 @@ export default async function page( {params}: Props){
         notFound();
     return(
         <>
-        <div>
+        <div>{session &&(
             <div className="flex justify-between">
 
             <p className="text-3xl font-bold">{issue.title}</p>
             <Flex gap="4">
+
+                <div><SelectDemo/></div>
+                
+
             <Button><Pencil2Icon/>
              <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
              </Button>
             <DeleteIssueButton issueId={issue.id}/>
             </Flex>
-            </div>
+            </div>)}
             
             
             <Flex>

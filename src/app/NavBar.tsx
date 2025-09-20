@@ -3,9 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AiFillBug } from "react-icons/ai";
 import classnames from "classnames";
-import { Avatar, Box, DropdownMenu, Button } from "@radix-ui/themes";
+import { Avatar, Box, DropdownMenu, Button,} from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+
 
 
 
@@ -46,7 +47,7 @@ export default function NavBar(){
 							<DropdownMenu.Trigger>
 								<Button variant="ghost" radius="full" size="2" aria-label="Account menu">
 									<Avatar fallback="?"
-									src={session?.user?.image ?? undefined}
+									src={session.user!.image!}
 									size="2"
 									radius="full"
 									/>
@@ -63,6 +64,8 @@ export default function NavBar(){
 						</DropdownMenu.Root>
 
 					)}
+                   
+
 					{status === "unauthenticated" &&(
 						<Link href="/api/auth/signin">Log in</Link>
 					)}
