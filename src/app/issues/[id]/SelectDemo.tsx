@@ -7,10 +7,9 @@ import {
 	ChevronDownIcon,
 	ChevronUpIcon,
 } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@radix-ui/themes/components/skeleton";
+import { Skeleton } from "@radix-ui/themes";
 
 // Define User type
 interface User {
@@ -18,7 +17,13 @@ interface User {
 	name: string;
 }
 
-const SelectDemo = () => {
+// Minimal shape of Issue needed for this component
+interface IssueForAssign {
+	id: number;
+	assignedToUserId?: string | null;
+}
+
+const SelectDemo = ({issue}:{issue: IssueForAssign}) => {
 	const {data: users, error, isLoading} = useQuery<User[]>({
 		queryKey: ['users'],
 		queryFn: () => axios.get('/api/users').then(res => res.data),
@@ -26,10 +31,16 @@ const SelectDemo = () => {
 		retry:3
 	});
 	if(isLoading) return <Skeleton/>
+	if(error) return <span className="text-red-600 text-sm">Failed to load users</span>
 
 	return (
 		
-		<Select.Root>
+		<Select.Root
+		defaultValue={issue.assignedToUserId ?? 'unassigned'}
+		onValueChange={(userId)=>{
+			const payloadId = userId === 'unassigned' ? null : userId;
+			axios.patch('/api/issues/'+issue.id,{AssignedToUserId: payloadId});
+		}}>
 			<Select.Trigger
 				className="inline-flex items-center justify-between gap-2 rounded border border-gray-300 bg-white px-3 py-2 text-sm leading-none text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 data-[placeholder]:text-gray-400 w-56"
 				aria-label="Food"
@@ -49,9 +60,7 @@ const SelectDemo = () => {
 					</Select.ScrollUpButton>
 					<Select.Viewport className="p-1">
 						<Select.Group>
-							<Select.Label className="px-2 py-1 text-xs font-medium text-gray-500">
-								Suggestion
-							</Select.Label>
+							<SelectItem key="unassigned" value="unassigned">Unassigned</SelectItem>
 							{users?.map((user: User) => (
 								<SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
 							))}

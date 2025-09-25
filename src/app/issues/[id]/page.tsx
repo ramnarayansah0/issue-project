@@ -32,7 +32,7 @@ export default async function page( {params}: Props){
             <p className="text-3xl font-bold">{issue.title}</p>
             <Flex gap="4">
 
-                <div><SelectDemo/></div>
+                <div><SelectDemo issue={issue}/></div>
                 
 
             <Button><Pencil2Icon/>
