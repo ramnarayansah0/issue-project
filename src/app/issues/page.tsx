@@ -5,6 +5,7 @@ import Link from ".//../component/Link"
 import { prisma } from "../../../prisma/client";
 import IssueStatusBadge from "../component/IssueStatusBadge";
 import delay from 'delay';
+import Filter from "./Filter";
 
 export default async function Page(){
  const issues = await prisma.issue.findMany();
@@ -14,8 +15,11 @@ export default async function Page(){
 
     return(
         <>
+        <div className="flex justify-between">
         <div className="mb-5">
         <Button><Link href="/issues/new">New issue</Link></Button>
+        </div>
+        <div><Filter/></div>
 
         </div>
         <div>

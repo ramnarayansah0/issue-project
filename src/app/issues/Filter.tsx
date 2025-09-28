@@ -7,46 +7,23 @@ import {
 	ChevronDownIcon,
 	ChevronUpIcon,
 } from "@radix-ui/react-icons";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@radix-ui/themes";
-import toast,{Toaster} from 'react-hot-toast'
-// Define User type
-interface User {
-	id: string;
-	name: string;
-}
+import { Status } from "@/generated/prisma";
 
-// Minimal shape of Issue needed for this component
-interface IssueForAssign {
-	id: number;
-	assignedToUserId?: string | null;
-}
-
-const SelectDemo = ({issue}:{issue: IssueForAssign}) => {
-	const {data: users, error, isLoading} = useQuery<User[]>({
-		queryKey: ['users'],
-		queryFn: () => axios.get('/api/users').then(res => res.data),
-		staleTime: 60 * 1000,
-		retry:3
-	});
-	if(isLoading) return <Skeleton/>
-	if(error) return <span className="text-red-600 text-sm">Failed to load users</span>
-
-	return (
-		
-		<Select.Root
-		defaultValue={issue.assignedToUserId ?? 'unassigned'}
-		onValueChange={(userId)=>{
-			const payloadId = userId === 'unassigned' ? null : userId;
-			axios.patch('/api/issues/'+issue.id,{AssignedToUserId: payloadId}).catch(()=>
-			{toast.error("Changes coulld not be saved")});
-		}}>
+export default function Filter(){
+    const filterOptions: { label: string, value?: Status }[] = [
+        {label:"All"},
+        {label:"Open", value:"OPEN"},
+        {label:"In Progress", value:"IN_PROGRESS"},
+        {label:"Closed", value:"CLOSED"}
+    ]
+    
+    return(
+        <Select.Root>
 			<Select.Trigger
 				className="inline-flex items-center justify-between gap-2 rounded border border-gray-300 bg-white px-3 py-2 text-sm leading-none text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 data-[placeholder]:text-gray-400 w-56"
-				aria-label="Food"
+				aria-label="Filter"
 			>
-				<Select.Value placeholder="Assign" />
+				<Select.Value placeholder="Filter by status" />
 				<Select.Icon>
 					<ChevronDownIcon />
 				</Select.Icon>
@@ -61,10 +38,14 @@ const SelectDemo = ({issue}:{issue: IssueForAssign}) => {
 					</Select.ScrollUpButton>
 					<Select.Viewport className="p-1">
 						<Select.Group>
-							<SelectItem key="unassigned" value="unassigned">Unassigned</SelectItem>
-							{users?.map((user: User) => (
-								<SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
-							))}
+                            {filterOptions.map((option) => (
+                                <SelectItem 
+                                    key={option.value || " "} 
+                                    value={option.value || " "}
+                                >
+                                    {option.label}
+                                </SelectItem>
+                            ))}
 						</Select.Group>
 					</Select.Viewport>
 					<Select.ScrollDownButton className="flex items-center justify-center h-6 bg-white text-gray-700">
@@ -73,8 +54,8 @@ const SelectDemo = ({issue}:{issue: IssueForAssign}) => {
 				</Select.Content>
 			</Select.Portal>
 		</Select.Root>
-	);
-};
+    )
+}
 
 type SelectItemRef = React.ElementRef<typeof Select.Item>;
 type SelectItemProps = React.ComponentPropsWithoutRef<typeof Select.Item>;
@@ -99,5 +80,3 @@ const SelectItem = React.forwardRef<SelectItemRef, SelectItemProps>(
 	},
 );
 SelectItem.displayName = "SelectItem";
-
-export default SelectDemo;
