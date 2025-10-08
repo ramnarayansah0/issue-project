@@ -8,17 +8,27 @@ import {
 	ChevronUpIcon,
 } from "@radix-ui/react-icons";
 import { Status } from "@/generated/prisma";
+import { useRouter } from "next/navigation";
 
-export default function Filter(){
-    const filterOptions: { label: string, value?: Status }[] = [
-        {label:"All"},
+export default function Filter({ searchParams }: { searchParams: { status?: string } }){
+    const filterOptions: { label: string, value: string }[] = [
+        {label:"All", value:"all"},
         {label:"Open", value:"OPEN"},
         {label:"In Progress", value:"IN_PROGRESS"},
         {label:"Closed", value:"CLOSED"}
     ]
-    
+    const router = useRouter();
+
     return(
-        <Select.Root>
+		<Select.Root 
+            value={searchParams.status || "all"}
+            onValueChange={(status)=>{
+			console.log('Filter onValueChange called with status:', status);
+			const query = status && status !== "all" ? `?status=${status}` : '';
+			console.log('Generated query:', query);
+			console.log('Navigating to:', '/issues' + query);
+			router.push('/issues' + query);
+		}}>
 			<Select.Trigger
 				className="inline-flex items-center justify-between gap-2 rounded border border-gray-300 bg-white px-3 py-2 text-sm leading-none text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 data-[placeholder]:text-gray-400 w-56"
 				aria-label="Filter"
@@ -40,8 +50,8 @@ export default function Filter(){
 						<Select.Group>
                             {filterOptions.map((option) => (
                                 <SelectItem 
-                                    key={option.value || " "} 
-                                    value={option.value || " "}
+                                    key={option.value} 
+                                    value={option.value}
                                 >
                                     {option.label}
                                 </SelectItem>
